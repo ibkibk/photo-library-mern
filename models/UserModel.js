@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
   posts: [
     {
       type: mongoose.Types.ObjectId,
-      // required: true,
+      required: true,
       ref: "PostedImage",
     },
   ],

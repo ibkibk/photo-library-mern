@@ -1,4 +1,8 @@
 import PostedImage from "../models/PhotoModel.js";
+import validator from "express-validator";
+import HttpError from "../middlewares/httpError.js";
+
+const { validationResult } = validator;
 
 export const getPosts = async (req, res, next) => {
   try {
@@ -18,13 +22,18 @@ export const getPosts = async (req, res, next) => {
 
 export const createPost = async (req, res, next) => {
   try {
-    const { image, title } = req.body;
-    const createdPost = await new PostedImage({
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log(errors);
+      return next(new HttpError("invalid inputs please check you data", 422));
+    }
+    const { title } = req.body;
+    const createdPost = new PostedImage({
       title,
-      image,
+      image: "http://localhost:3010/" + req.file.path,
     });
     console.log(createdPost);
-    createdPost.save();
+    await createdPost.save();
     res.status(200).json(createdPost);
     next();
   } catch (error) {
@@ -35,6 +44,11 @@ export const createPost = async (req, res, next) => {
 
 export const updataPost = async (req, res, next) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log(errors);
+      return next(new HttpError("invalid inputs please check you data", 422));
+    }
     const { title } = req.body;
     const postId = req.params.pid;
 
@@ -53,7 +67,6 @@ export const updataPost = async (req, res, next) => {
 export const deletePost = async (req, res, next) => {
   try {
     const postId = req.params.pid;
-
     await PostedImage.findByIdAndDelete(postId);
     res.status(200).json({ message: "post has been deleted" });
     next();

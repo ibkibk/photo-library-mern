@@ -31,7 +31,7 @@ export const signup = async (req, res, next) => {
       name,
       email,
       password: hashedPassword,
-      image,
+      image: "http://localhost:3010/" + req.file.path,
       posts: [],
     });
 
