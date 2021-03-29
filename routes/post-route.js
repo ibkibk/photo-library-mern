@@ -7,11 +7,13 @@ import {
 } from "../controllers/post-controller.js";
 import fileUpload from "../middlewares/file-upload.js";
 import validator from "express-validator";
-
+import auth from "../middlewares/auth.js";
 const { check } = validator;
 const router = express.Router();
 
 router.get("/", getPosts);
+
+router.use(auth);
 router.post(
   "/",
   fileUpload.single("image"),

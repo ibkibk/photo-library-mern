@@ -1,10 +1,17 @@
 import "./App.css";
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch,
+} from "react-router-dom";
+import MainNavigation from "./shared/Navigation/MainNavigation";
 
 const App = () => {
   return (
-    <div className="App">
-      <h1>hello world</h1>
-    </div>
+    <Router className="App">
+      <MainNavigation />
+    </Router>
   );
 };
 

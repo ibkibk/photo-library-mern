@@ -1,8 +1,12 @@
 import User from "../models/UserModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import HttpError from "../middlewares/httpError.js";
 import dotenv from "dotenv";
+import validator from "express-validator";
+
 dotenv.config({ path: "../config.env" });
+const { validationResult } = validator;
 
 export const getUsers = async (req, res, next) => {
   const userS = await User.find({}, "-password");
@@ -13,20 +17,25 @@ export const getUsers = async (req, res, next) => {
 };
 
 export const signup = async (req, res, next) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    console.log(error);
+    return next(new HttpError("invalid inputs please check you data", 422));
+  }
   try {
-    const { name, email, password, image, confimPassword } = req.body;
+    const { name, email, password, confirmPassword } = req.body;
 
     const userExist = await User.findOne({ email });
 
     if (userExist) {
       return res.status(404).json({ error: "User already exists" });
     }
-    if (password !== confimPassword) {
+    if (password !== confirmPassword) {
       return res.status(404).json({ error: "Passwords does not match" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
-
+    console.log(req.file);
     const createdUser = await User.create({
       name,
       email,

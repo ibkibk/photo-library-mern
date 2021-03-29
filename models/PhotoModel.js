@@ -3,11 +3,12 @@ import mongoose from "mongoose";
 const ImageSchema = new mongoose.Schema({
   title: {
     type: String,
-    // required: true,
+    required: true,
   },
   image: {
     type: String,
-    // required: true,
+    required: true,
+    default: "no-photo.jpg",
   },
   likes: {
     type: [String],
@@ -15,7 +16,7 @@ const ImageSchema = new mongoose.Schema({
   },
   creator: {
     type: mongoose.Types.ObjectId,
-    // required: true,
+    required: true,
     ref: "User",
   },
 });
